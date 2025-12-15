@@ -2,7 +2,7 @@
 
 > Utility functions for Morphsync applications including encoding, hashing, OTP generation, and serialization.
 
-[![npm version](https://img.shields.io/npm/v/@morphsync/utils.svg)](https://www.npmjs.com/package/@morphsync/utils)
+[![npm version](https://img.shields.io/npm/v/@morphsync%2Futils)](https://www.npmjs.com/package/@morphsync/utils)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 ## Features
@@ -388,5 +388,6 @@ Morphsync
 ## Support
 
 For issues and questions, please visit the [GitHub repository](https://github.com/morphsync/morphsync-utils).
-#   m o r p h s y n c - u t i l s  
+#   m o r p h s y n c - u t i l s 
+ 
  
