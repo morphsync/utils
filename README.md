@@ -388,5 +388,4 @@ Morphsync
 ## Support
 
 For issues and questions, please visit the [GitHub repository](https://github.com/morphsync/morphsync-utils).
-#   m o r p h s y n c - u t i l s  
- 
+#
