@@ -1,6 +1,6 @@
 # @morphsync/utils
 
-> Utility functions for Morphsync applications including encoding, hashing, OTP generation, and serialization.
+> Utility functions for Morphsync applications including encoding, hashing, OTP generation, date formatting, and serialization.
 
 [![npm version](https://img.shields.io/npm/v/@morphsync/utils.svg)](https://www.npmjs.com/package/@morphsync/utils)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
@@ -10,6 +10,7 @@
 - 🔐 SHA-1 hashing for passwords and tokens
 - 🔢 Cryptographically secure OTP generation
 - 📝 Base64 encoding and decoding
+- 📅 Date formatting and manipulation
 - 🧹 HTML entity decoding and text normalization
 - 📏 String padding utilities
 - 📦 Safe error serialization for logging
@@ -25,7 +26,7 @@ npm install @morphsync/utils
 ## Quick Start
 
 ```javascript
-const { sha1, generateOtp, base64Encode, serializeObject } = require('@morphsync/utils');
+const { sha1, generateOtp, base64Encode, date, addDate, serializeObject } = require('@morphsync/utils');
 
 // Hash password
 const hash = sha1('myPassword123');
@@ -35,6 +36,12 @@ const otp = generateOtp(6);
 
 // Encode data
 const encoded = base64Encode('Hello World');
+
+// Format date
+const formatted = date('YYYY-MM-DD HH:mm:ss');
+
+// Add days to date
+const tomorrow = addDate(null, 1, 'days');
 
 // Serialize error
 try {
@@ -138,6 +145,49 @@ const orderId = `ORD-${stringPad(123, 8, '0')}`;
 const invoiceNo = `INV-${stringPad(456, 6, '0')}`;
 ```
 
+### Date Utilities
+
+#### Date Formatting
+
+```javascript
+const { date } = require('@morphsync/utils');
+
+// Format current date
+const now = date('YYYY-MM-DD HH:mm:ss');
+
+// Format specific date
+const formatted = date('MMMM DD, YYYY', '2023-11-22');
+
+// Custom formats
+const dateOnly = date('YYYY-MM-DD');
+const timeOnly = date('HH:mm:ss');
+const custom = date('DD/MM/YYYY hh:mm A');
+```
+
+#### Date Manipulation
+
+```javascript
+const { addDate, date } = require('@morphsync/utils');
+
+// Add days
+const tomorrow = addDate(null, 1, 'days');
+const nextWeek = addDate(null, 7, 'days');
+
+// Add months
+const nextMonth = addDate('2023-11-22', 1, 'months');
+
+// Subtract time
+const yesterday = addDate(null, -1, 'days');
+const lastYear = addDate(null, -1, 'years');
+
+// Add hours/minutes
+const nextHour = addDate(null, 1, 'hours');
+const in30Minutes = addDate(null, 30, 'minutes');
+
+// Combine with formatting
+const expiryDate = date('YYYY-MM-DD', addDate(null, 30, 'days'));
+```
+
 ### Serialization
 
 #### Serialize Objects/Errors
@@ -227,6 +277,43 @@ Safely converts any error or object into a JSON-serializable object.
 - `error` (*): Any error or object to serialize
 
 **Returns:** JSON-serializable object
+
+### date(format, dateInput)
+
+Formats a date into a specified string format.
+
+**Parameters:**
+- `format` (string, optional): Desired output format (default: 'YYYY-MM-DD HH:mm:ss')
+- `dateInput` (string|Date, optional): Date to format (default: current date)
+
+**Returns:** Formatted date string
+
+**Format tokens:**
+- `YYYY` - 4-digit year
+- `YY` - 2-digit year
+- `MMMM` - Full month name
+- `MMM` - Short month name
+- `MM` - 2-digit month
+- `M` - Month number
+- `DD` - 2-digit day
+- `HH` - 24-hour format
+- `hh` - 12-hour format
+- `mm` - Minutes
+- `ss` - Seconds
+- `A` - AM/PM
+
+### addDate(dateInput, value, unit)
+
+Adds or subtracts time units to/from a date.
+
+**Parameters:**
+- `dateInput` (string|Date, optional): Date to modify (default: current date)
+- `value` (number): Amount to add (positive) or subtract (negative)
+- `unit` (string, optional): Time unit (default: 'days')
+
+**Units:** 'years', 'months', 'days', 'hours', 'minutes', 'seconds'
+
+**Returns:** Modified Date object
 
 ## Complete Examples
 

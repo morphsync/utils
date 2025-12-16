@@ -4,7 +4,7 @@
  * Professional utility functions for Morphsync         // Indicates production-grade reusable utilities
  * backend and service-layer applications.              // Clarifies intended usage scope
  *
- * @version 1.1.0                                      // Current package version
+ * @version 1.1.3                                      // Current package version
  * @author Jay Chauhan                                 // Package author
  * @license MIT                                        // Open-source license declaration
  */
@@ -112,6 +112,66 @@ const generateOtp = (length = 6) => {                    // Defines OTP generati
     return otp;                                          // Returns generated OTP
 };
 
+/**
+ * Formats a date into a specified string format.
+ *
+ * @param {string} [format='YYYY-MM-DD HH:mm:ss']        // Desired output format
+ * @param {string|Date} [dateInput=null]                 // Date to format (null = current date)
+ * @returns {string}                                     // Formatted date string
+ */
+const date = (format = 'YYYY-MM-DD HH:mm:ss', dateInput = null) => {
+    const now = dateInput ? new Date(dateInput) : new Date();
+    if (isNaN(now.getTime())) throw new Error('Invalid date input');
+
+    const monthNamesFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthNamesShort = monthNamesFull.map(name => name.slice(0, 3));
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours24 = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const hours12 = hours24 % 12 || 12;
+    const ampm = hours24 >= 12 ? 'PM' : 'AM';
+
+    const formatMap = {
+        'YYYY': year, 'YY': String(year).slice(-2), 'MMMM': monthNamesFull[month], 'MMM': monthNamesShort[month],
+        'MM': String(month + 1).padStart(2, '0'), 'M': month + 1, 'DD': day,
+        'HH': String(hours24).padStart(2, '0'), 'hh': String(hours12).padStart(2, '0'),
+        'mm': minutes, 'ss': seconds, 'A': ampm
+    };
+
+    let formattedDate = format;
+    for (const [placeholder, value] of Object.entries(formatMap)) {
+        formattedDate = formattedDate.replace(new RegExp(placeholder, 'g'), value);
+    }
+    return formattedDate;
+};
+
+/**
+ * Adds or subtracts time units to/from a date.
+ *
+ * @param {string|Date} [dateInput=null]                 // Date to modify (null = current date)
+ * @param {number} value                                  // Amount to add (positive) or subtract (negative)
+ * @param {string} [unit='days']                          // Unit: 'years', 'months', 'days', 'hours', 'minutes', 'seconds'
+ * @returns {Date}                                        // Modified date object
+ */
+const addDate = (dateInput = null, value, unit = 'days') => {
+    const date = dateInput ? new Date(dateInput) : new Date();
+    if (isNaN(date.getTime())) throw new Error('Invalid date input');
+
+    switch (unit.toLowerCase()) {
+        case 'years': date.setFullYear(date.getFullYear() + value); break;
+        case 'months': date.setMonth(date.getMonth() + value); break;
+        case 'days': date.setDate(date.getDate() + value); break;
+        case 'hours': date.setHours(date.getHours() + value); break;
+        case 'minutes': date.setMinutes(date.getMinutes() + value); break;
+        case 'seconds': date.setSeconds(date.getSeconds() + value); break;
+        default: throw new Error(`Unsupported unit: ${unit}`);
+    }
+    return date;
+};
+
 module.exports = {                                      // Exposes public utilities for package consumers
     base64Encode,                                       // Base64 encoding helper
     base64Decode,                                       // Base64 decoding helper
@@ -119,5 +179,7 @@ module.exports = {                                      // Exposes public utilit
     stringPad,                                          // String padding helper
     serializeObject,                                    // Safe serialization helper
     sha1,                                                // SHA-1 hashing helper
-    generateOtp                                         // OTP generation helper
+    generateOtp,                                        // OTP generation helper
+    date,                                               // Date formatting helper
+    addDate                                             // Date manipulation helper
 };
